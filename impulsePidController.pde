@@ -25,7 +25,7 @@ void setup()
   size(1280, 720);
   frameRate(30);
   loadImages();
-  train = new Train(trainMass, .5);
+  train = new Train(trainMass, .008);
 }
 
 void draw()
@@ -58,7 +58,6 @@ void drawCoaster()
 
 void mouseClicked()
 {
-  //println("x: ", mouseX, "y: ", mouseY);
   println("c%2: ", c % 2);
   train.setForce(42583f * (c++ % 2));
 }

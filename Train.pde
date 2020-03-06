@@ -1,6 +1,6 @@
 class Train
 {
-  private float uFriction;
+  private float damping;
   private float mass;
   
   private float position;
@@ -9,9 +9,9 @@ class Train
   
   private float force;
   
-  Train(float mass, float uFriction)
+  Train(float mass, float damping)
   {
-    this.uFriction = uFriction;
+    this.damping = damping;
     this.mass = mass;
     this.position = this.velocity = this.acceleration = 0;
   }
@@ -45,6 +45,7 @@ class Train
   {
     this.acceleration = this.force / this.mass;
     this.velocity += this.acceleration / frameRate;
+    this.velocity += -1 * this.velocity * this.damping;
     this.position += this.velocity / frameRate;
   }
 }
