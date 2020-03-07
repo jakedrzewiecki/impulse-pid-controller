@@ -6,7 +6,7 @@ float launchForce;
 PImage trackImg, trainImg, wheelsImg, brakesImg;
 int c;
 
-int TRACK_X = 0;
+int TRACK_X = 10;
 int TRACK_Y = 5;
 int BRAKES_X_OFFSET = TRACK_X + 291;
 int BRAKES_Y_OFFSET = TRACK_Y + 19;
@@ -18,6 +18,7 @@ int TRAIN_Y_OFFSET = TRACK_Y + 60;
 final float PIXELS_PER_METER = 1244 / 46; //pixels per meter
 
 Train train;
+Track track;
 
 void setup()
 {
@@ -28,6 +29,8 @@ void setup()
   c = 0;
   
   train = new Train(trainMass, .008);
+  track = new Track(train, trackImg.width);
+  
   launchForce = train.getMass() * maxVelocity / launchTime; // N
   println(launchForce);
 }
@@ -50,7 +53,7 @@ void loadImages()
 
 void drawCoaster()
 {
-  int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
+  int trainPosition = int(track.getTrain().getPosition() * PIXELS_PER_METER);
   imageMode(CENTER);
   image(trainImg, TRAIN_X_OFFSET + trainPosition, TRAIN_Y_OFFSET);
   imageMode(CORNER);
@@ -62,6 +65,7 @@ void drawCoaster()
 
 void mouseClicked()
 {
-  println("c%2: ", c % 2);
-  train.setForce(launchForce * (c++ % 2));
+  //println("c%2: ", c % 2);
+  track.setForceOnTrain(launchForce * (c++ % 2));
+  println("x: ", mouseX);
 }
