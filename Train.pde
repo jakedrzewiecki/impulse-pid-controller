@@ -42,6 +42,16 @@ class Train
     return this.velocity;
   }
   
+  void setVelocity(float value)
+  {
+    this.velocity = value;
+  }
+  
+  void invertVelocity()
+  {
+    this.velocity *= -1;
+  }
+  
   float getPosition()
   {
     return this.position;

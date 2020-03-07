@@ -2,6 +2,7 @@ float trainMass = 5440; // kg, 12000 lbs
 float maxVelocity = 31; // m/s, 70 mph
 float launchTime = 4; // s
 float launchForce;
+float trackLength;
 
 PImage trackImg, trainImg, wheelsImg, brakesImg;
 int c;
@@ -29,6 +30,7 @@ void setup()
   
   train = new Train(trainMass, .008);
   launchForce = train.getMass() * maxVelocity / launchTime; // N
+  trackLength = trackImg.width / PIXELS_PER_METER;
   println(launchForce);
 }
 
@@ -36,8 +38,11 @@ void draw()
 {
   clear();
   background(0, 125, 175);
+  
   train.calculate();
-  drawCoaster();
+  int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
+  swing();
+  drawCoaster(trainPosition);
 }
 
 void loadImages()
@@ -48,9 +53,8 @@ void loadImages()
   brakesImg = loadImage("brakes.png");
 }
 
-void drawCoaster()
+void drawCoaster(int trainPosition)
 {
-  int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
   imageMode(CENTER);
   image(trainImg, TRAIN_X_OFFSET + trainPosition, TRAIN_Y_OFFSET);
   imageMode(CORNER);
@@ -58,6 +62,18 @@ void drawCoaster()
   image(trackImg, TRACK_X, TRACK_Y);
   imageMode(CENTER);
   image(wheelsImg, WHEELS_X_OFFSET + trainPosition, WHEELS_Y_OFFSET);
+}
+
+void swing()
+{
+  if(0 <= train.getPosition() && train.getPosition() <= trackLength)
+  {
+  }
+  else
+  {
+    train.invertVelocity();
+    //train.setForce(0);
+  }
 }
 
 void mouseClicked()
