@@ -4,7 +4,6 @@ float launchTime = 4; // s
 float launchForce;
 
 PImage trackImg, trainImg, wheelsImg, brakesImg;
-int x;
 int c;
 
 int TRACK_X = 0;
@@ -26,7 +25,6 @@ void setup()
   frameRate(30);
   loadImages();
   
-  x = 0;
   c = 0;
   
   train = new Train(trainMass, .008);
