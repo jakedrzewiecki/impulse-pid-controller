@@ -1,12 +1,8 @@
 class Train
 {
+  private float position, velocity, acceleration;
   private float damping;
   private float mass;
-  
-  private float position;
-  private float velocity;
-  private float acceleration;
-  
   private float force;
   
   Train(float mass, float damping)
@@ -16,14 +12,24 @@ class Train
     this.position = this.velocity = this.acceleration = 0;
   }
   
-  void setForce(float force)
+  void setForce(float value)
   {
-    this.force = force;
+    this.force = value;
   }
   
   float getForce()
   {
     return this.force;
+  }
+  
+  float getMass()
+  {
+    return this.mass;
+  }
+  
+  void setMass(float value)
+  {
+    this.mass = value;
   }
   
   float getAcceleration()
@@ -43,9 +49,16 @@ class Train
   
   void calculate()
   {
+    // f = ma
     this.acceleration = this.force / this.mass;
+    
+    // v = ∫a dt
     this.velocity += this.acceleration / frameRate;
+    
+    // rudimentary air resistance / friction
     this.velocity += -1 * this.velocity * this.damping;
+    
+    // x = ∫v dt
     this.position += this.velocity / frameRate;
   }
 }

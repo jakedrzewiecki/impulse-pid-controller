@@ -1,5 +1,7 @@
 float trainMass = 5440; // kg, 12000 lbs
 float maxVelocity = 31; // m/s, 70 mph
+float launchTime = 4; // s
+float launchForce;
 
 PImage trackImg, trainImg, wheelsImg, brakesImg;
 int x;
@@ -20,12 +22,16 @@ Train train;
 
 void setup()
 {
-  x = 0;
-  c = 0;
   size(1280, 720);
   frameRate(30);
   loadImages();
+  
+  x = 0;
+  c = 0;
+  
   train = new Train(trainMass, .008);
+  launchForce = train.getMass() * maxVelocity / launchTime; // N
+  println(launchForce);
 }
 
 void draw()
@@ -59,5 +65,5 @@ void drawCoaster()
 void mouseClicked()
 {
   println("c%2: ", c % 2);
-  train.setForce(42583f * (c++ % 2));
+  train.setForce(launchForce * (c++ % 2));
 }
