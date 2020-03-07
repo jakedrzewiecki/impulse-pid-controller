@@ -4,6 +4,10 @@ float launchTime = 4; // s
 float launchForce;
 float trackLength;
 
+float storedVelocity;
+int storedMillis;
+boolean swinging;
+
 PImage trackImg, trainImg, wheelsImg, brakesImg;
 int c;
 
@@ -28,9 +32,10 @@ void setup()
   
   c = 0;
   
-  train = new Train(trainMass, .008);
+  train = new Train(trainMass, .002);
   launchForce = train.getMass() * maxVelocity / launchTime; // N
   trackLength = trackImg.width / PIXELS_PER_METER;
+  println("track length (m): ", trackLength);
   println(launchForce);
 }
 
@@ -38,10 +43,10 @@ void draw()
 {
   clear();
   background(0, 125, 175);
-  
-  train.calculate();
+  if (checkSwing())
+    train.calculate();
   int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
-  swing();
+  
   drawCoaster(trainPosition);
 }
 
@@ -64,20 +69,58 @@ void drawCoaster(int trainPosition)
   image(wheelsImg, WHEELS_X_OFFSET + trainPosition, WHEELS_Y_OFFSET);
 }
 
-void swing()
+boolean checkSwing()
 {
-  if(0 <= train.getPosition() && train.getPosition() <= trackLength)
+  //if the train is in the control area
+  if(-25 <= train.getPosition() && train.getPosition() <= trackLength)
   {
+    //if it was previously swinging
+    if(swinging)
+    {
+      //now it's no longer swinging
+      swinging = false;
+    }
+    return true;
   }
+  //if it is not in the control area
   else
   {
-    train.invertVelocity();
-    //train.setForce(0);
+    //if it was previously NOT swinging
+    if(!swinging)
+    {
+      //it is now swinging
+      swinging = true;
+      //store props
+      println("Velocity (m/s): ", round(train.getVelocity()));
+      storedVelocity = train.getVelocity();
+      storedMillis = millis();
+      return false;
+    }
+    //if it was previously swinging
+    else
+    {
+      //check time elapse
+      int diff = millis() - storedMillis;
+      if(diff > (abs(train.getVelocity()) * 100))
+      {
+        train.invertVelocity();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
   }
 }
 
-void mouseClicked()
+void keyPressed()
 {
-  println("c%2: ", c % 2);
-  train.setForce(launchForce * (c++ % 2));
+  float force = (keyCode == RIGHT || keyCode == LEFT ? (keyCode == RIGHT ? launchForce : -1 * launchForce) : 0);
+  train.setForce(force);
+}
+
+void keyReleased()
+{
+  train.setForce(0);
 }
