@@ -22,7 +22,8 @@ Track track;
 
 void setup()
 {
-  size(1280, 720);
+  //size(1280, 720);
+  size(1600, 720);
   frameRate(30);
   loadImages();
   
@@ -39,7 +40,7 @@ void draw()
 {
   clear();
   background(0, 125, 175);
-  train.calculate();
+  track.update();
   drawCoaster();
 }
 

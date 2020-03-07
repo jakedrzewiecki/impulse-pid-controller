@@ -15,23 +15,22 @@ class Track
   
   void update()
   {
-    this.train.calculate();
-    
-  }
-  
-  boolean setForceOnTrain(float force)
-  {
     if(inControl())
     {
-      this.train.setForce(force);
-      return true;
+      this.train.calculate();
     }
     else
     {
-      this.train.setForce(0);
       this.train.setVelocity(0);
-      return false;
+      this.train.setForce(0);
     }
+      
+    
+  }
+  
+  void setForceOnTrain(float force)
+  {
+    this.train.setForce(force);
   }
   
   private boolean inControl()
