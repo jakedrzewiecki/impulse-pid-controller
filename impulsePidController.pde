@@ -9,7 +9,6 @@ int storedMillis;
 boolean swinging;
 
 PImage trackImg, trainImg, wheelsImg, brakesImg;
-int c;
 
 int TRACK_X = 0;
 int TRACK_Y = 5;
@@ -30,8 +29,6 @@ void setup()
   frameRate(30);
   loadImages();
   
-  c = 0;
-  
   train = new Train(trainMass, .002);
   launchForce = train.getMass() * maxVelocity / launchTime; // N
   trackLength = trackImg.width / PIXELS_PER_METER;
@@ -43,7 +40,7 @@ void draw()
 {
   clear();
   background(0, 125, 175);
-  if (checkSwing())
+  if (trainInControl())
     train.calculate();
   int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
   
@@ -69,7 +66,7 @@ void drawCoaster(int trainPosition)
   image(wheelsImg, WHEELS_X_OFFSET + trainPosition, WHEELS_Y_OFFSET);
 }
 
-boolean checkSwing()
+boolean trainInControl()
 {
   //if the train is in the control area
   if(-25 <= train.getPosition() && train.getPosition() <= trackLength)
