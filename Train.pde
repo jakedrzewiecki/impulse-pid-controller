@@ -42,6 +42,16 @@ class Train
     return this.velocity;
   }
   
+  void setVelocity(float value)
+  {
+    this.velocity = value;
+  }
+  
+  void invertVelocity()
+  {
+    this.velocity *= -1;
+  }
+  
   float getPosition()
   {
     return this.position;
@@ -56,7 +66,8 @@ class Train
     this.velocity += this.acceleration / frameRate;
     
     // rudimentary air resistance / friction
-    this.velocity += -1 * this.velocity * this.damping;
+    this.velocity += -1 * (this.velocity * this.damping);
+    this.velocity += (this.velocity != 0) ? (this.velocity > 0 ? -1 * this.damping : this.damping) : 0;
     
     // x = ∫v dt
     this.position += this.velocity / frameRate;

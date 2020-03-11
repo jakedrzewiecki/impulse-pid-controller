@@ -2,9 +2,13 @@ float trainMass = 5440; // kg, 12000 lbs
 float maxVelocity = 31; // m/s, 70 mph
 float launchTime = 4; // s
 float launchForce;
+float trackLength;
+
+float storedVelocity;
+int storedMillis;
+boolean swinging;
 
 PImage trackImg, trainImg, wheelsImg, brakesImg;
-int c;
 
 int TRACK_X = 0;
 int TRACK_Y = 5;
@@ -25,10 +29,10 @@ void setup()
   frameRate(30);
   loadImages();
   
-  c = 0;
-  
-  train = new Train(trainMass, .008);
+  train = new Train(trainMass, .002);
   launchForce = train.getMass() * maxVelocity / launchTime; // N
+  trackLength = trackImg.width / PIXELS_PER_METER;
+  println("track length (m): ", trackLength);
   println(launchForce);
 }
 
@@ -36,8 +40,11 @@ void draw()
 {
   clear();
   background(0, 125, 175);
-  train.calculate();
-  drawCoaster();
+  if (trainInControl())
+    train.calculate();
+  int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
+  
+  drawCoaster(trainPosition);
 }
 
 void loadImages()
@@ -48,9 +55,8 @@ void loadImages()
   brakesImg = loadImage("brakes.png");
 }
 
-void drawCoaster()
+void drawCoaster(int trainPosition)
 {
-  int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
   imageMode(CENTER);
   image(trainImg, TRAIN_X_OFFSET + trainPosition, TRAIN_Y_OFFSET);
   imageMode(CORNER);
@@ -60,8 +66,58 @@ void drawCoaster()
   image(wheelsImg, WHEELS_X_OFFSET + trainPosition, WHEELS_Y_OFFSET);
 }
 
-void mouseClicked()
+boolean trainInControl()
 {
-  println("c%2: ", c % 2);
-  train.setForce(launchForce * (c++ % 2));
+  //if the train is in the control area
+  if(-25 <= train.getPosition() && train.getPosition() <= trackLength)
+  {
+    //if it was previously swinging
+    if(swinging)
+    {
+      //now it's no longer swinging
+      swinging = false;
+    }
+    return true;
+  }
+  //if it is not in the control area
+  else
+  {
+    //if it was previously NOT swinging
+    if(!swinging)
+    {
+      //it is now swinging
+      swinging = true;
+      //store props
+      println("Velocity (m/s): ", round(train.getVelocity()));
+      storedVelocity = train.getVelocity();
+      storedMillis = millis();
+      return false;
+    }
+    //if it was previously swinging
+    else
+    {
+      //check time elapse
+      int diff = millis() - storedMillis;
+      if(diff > (abs(train.getVelocity()) * 100))
+      {
+        train.invertVelocity();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+}
+
+void keyPressed()
+{
+  float force = (keyCode == RIGHT || keyCode == LEFT ? (keyCode == RIGHT ? launchForce : -1 * launchForce) : 0);
+  train.setForce(force);
+}
+
+void keyReleased()
+{
+  train.setForce(0);
 }
