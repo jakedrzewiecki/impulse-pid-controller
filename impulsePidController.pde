@@ -55,6 +55,13 @@ void draw()
   int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
   
   drawCoaster(trainPosition);
+  
+    if(boolean((millis() / 500) % 2))
+  {
+    textSize(32);
+    text("Hi Courtney!!! I love you!! :)", 20, 200);
+    fill(0, 255, 255);
+  }
 }
 
 void loadImages()
