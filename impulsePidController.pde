@@ -22,6 +22,7 @@ int TRAIN_Y_OFFSET = TRACK_Y + 60;
 final float PIXELS_PER_METER = 1244 / 46; //pixels per meter
 
 Train train;
+PIDController pidController;
 
 void setup()
 {
@@ -30,10 +31,15 @@ void setup()
   loadImages();
   
   train = new Train(trainMass, .002);
+  pidController = new PIDController(train);
   launchForce = train.getMass() * maxVelocity / launchTime; // N
   trackLength = trackImg.width / PIXELS_PER_METER;
   println("track length (m): ", trackLength);
   println(launchForce);
+  
+  pidController.setPoint = 10;
+  pidController.kp = 1000;
+  pidController.kd = 10000;
 }
 
 void draw()
@@ -41,7 +47,11 @@ void draw()
   clear();
   background(0, 125, 175);
   if (trainInControl())
+  {
     train.calculate();
+    train.setForce(pidController.calculateOutput());
+    
+  }
   int trainPosition = int(train.getPosition() * PIXELS_PER_METER);
   
   drawCoaster(trainPosition);
