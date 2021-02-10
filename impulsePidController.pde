@@ -39,7 +39,7 @@ void setup()
   
   pidController.setPoint = 10;
   pidController.kp = 1000;
-  pidController.kd = 10000;
+  pidController.kd = 4750;
 }
 
 void draw()
